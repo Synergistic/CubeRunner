@@ -46,20 +46,25 @@ public class Runner : MonoBehaviour {
 		if (Input.GetButtonUp ("Crouch")) 
 		{
 			crouching = false;
-			tempPos = transform.position;
-			tempPos.y += 0.5f;
-			transform.position = tempPos;
+			if (touchingPlatform)
+			{
+				tempPos = transform.position;
+				tempPos.y += 0.5f;
+				transform.position = tempPos;
+			}
+
 		}
 
 		if (crouching) 
 		{
 			if (touchingPlatform) 
-				tempScale.y = Mathf.Lerp (1.0f, 0.5f, Time.time);
+			{
+				tempScale.y = Mathf.Lerp (1.0f, 0.5f, Time.time * 2);
+			}
 		} 
 		else 
 		{
-			tempScale.y = Mathf.Lerp (0.5f, 1.0f, Time.time * 5);
-
+			tempScale.y = Mathf.Lerp (0.5f, 1.0f, Time.time);
 		}
 		transform.localScale = tempScale;
 		distanceTraveled = transform.localPosition.x;
@@ -68,17 +73,20 @@ public class Runner : MonoBehaviour {
 
 	void FixedUpdate () 
 	{
-		if (timer >= 10f) 
+		if (timer >= 15f) 
 		{
 			timer = 0f;
-			acceleration += 1f;
 			maxSpeed += 0.5f;
 		}
-		if(touchingPlatform && rigidbody.velocity.x < maxSpeed)
+		if(rigidbody.velocity.x <= maxSpeed)
 		{
 			rigidbody.AddForce(acceleration, 0f, 0f, ForceMode.Acceleration);
 		}
+
+		if (!touchingPlatform)
+			rigidbody.AddForce (((-acceleration/4f)*3f), 0f, 0f, ForceMode.Acceleration);
 		ScoreManager.score = (int)transform.position.x;
+		SpeedManager.speed = rigidbody.velocity.x;
 	}
 
 	void OnCollisionStay () 
