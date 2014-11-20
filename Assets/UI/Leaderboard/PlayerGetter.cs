@@ -11,7 +11,6 @@ public class PlayerGetter : MonoBehaviour
 {
     ServiceAPI sp = null;
     ScoreBoardService scoreBoardService = null; // Initializing ScoreBoard Service.
-    public string success;
     LeaderboardRetriever callBack = new LeaderboardRetriever();
 
 #if UNITY_EDITOR
@@ -31,6 +30,11 @@ public class PlayerGetter : MonoBehaviour
     {
         scoreBoardService = sp.BuildScoreBoardService(); // Initializing ScoreBoard Service.
         scoreBoardService.GetTopNRankings("CubeRunner", 10, callBack);
+    }
+
+    public void ReturnToMenu()
+    {
+        Application.LoadLevel("MainMenu");
     }
 
 }
